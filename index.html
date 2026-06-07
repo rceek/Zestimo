@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Zestimo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;transition:background 0.5s ease,color 0.5s ease;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.dark{background:#0a0f1a}
+body.light{background:#e8f0fe}
+
+/* ========== KUN REJIMI UCHUN FON ========== */
+body.light .animated-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+body.light .gradient-orb-1{background:radial-gradient(circle,#f093fb,#f5576c);width:500px;height:500px;top:-150px;left:-150px}
+body.light .gradient-orb-2{background:radial-gradient(circle,#4facfe,#00f2fe);width:600px;height:600px;bottom:-200px;right:-200px}
+body.light .gradient-orb-3{background:radial-gradient(circle,#fa709a,#fee140);width:400px;height:400px;top:30%;right:10%}
+body.light .gradient-orb-4{background:radial-gradient(circle,#a18cd1,#fbc2eb);width:350px;height:350px;bottom:20%;left:10%}
+
+/* ========== TUN REJIMI UCHUN FON ========== */
+body.dark .animated-bg{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e)}
+body.dark .gradient-orb-1{background:radial-gradient(circle,#007aff,#5856d6);width:500px;height:500px;top:-150px;left:-150px}
+body.dark .gradient-orb-2{background:radial-gradient(circle,#30b0c0,#4ECDC4);width:600px;height:600px;bottom:-200px;right:-200px}
+body.dark .gradient-orb-3{background:radial-gradient(circle,#5856d6,#007aff);width:400px;height:400px;top:30%;right:10%}
+body.dark .gradient-orb-4{background:radial-gradient(circle,#FF6B6B,#FF8E53);width:350px;height:350px;bottom:20%;left:10%}
+
+.animated-bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-2;
+  overflow:hidden;
+}
+.gradient-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0.5;
+  animation:float 20s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-30px) scale(1.05)}
+  66%{transform:translate(-20px,20px) scale(0.98)}
+}
+.mesh-gradient{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-image:radial-gradient(circle at 20% 40%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  background:rgba(255,255,255,0.3);
+  border-radius:50%;
+  pointer-events:none;
+  animation:particleFloat 8s ease-in-out infinite;
+}
+@keyframes particleFloat{
+  0%{transform:translateY(0) scale(1);opacity:0}
+  50%{transform:translateY(-100px) scale(1.5);opacity:0.5}
+  100%{transform:translateY(-200px) scale(0.5);opacity:0}
+}
+
+/* Apple Style - Glassmorphism */
+.glass,.service-item,.menu-item,.cart-glass,.form-glass,.clinic-card,.shop-card,.checkout-items{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:0.5px solid;border-radius:20px}
+body.dark .glass,body.dark .service-item,body.dark .menu-item,body.dark .cart-glass,body.dark .form-glass,body.dark .clinic-card,body.dark .shop-card,body.dark .checkout-items{background:rgba(20,25,45,0.5);border-color:rgba(255,255,255,0.08);color:#fff}
+body.light .glass,body.light .service-item,body.light .menu-item,body.light .cart-glass,body.light .form-glass,body.light .clinic-card,body.light .shop-card,body.light .checkout-items{background:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.3);color:#1a1a2e}
+.form-input,.form-select{width:100%;padding:14px 16px;border:0.5px solid;border-radius:14px;font-size:16px;margin-bottom:14px;font-family:'Inter',sans-serif;transition:all 0.2s}
+body.light .form-input,body.light .form-select{background:#fff;color:#1a1a2e;border-color:#e5e5ea}
+body.dark .form-input,body.dark .form-select{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2)}
+.form-input:focus,.form-select:focus{outline:none;border-color:#007aff;box-shadow:0 0 0 3px rgba(0,122,255,0.2)}
+.add-btn,.category-btn,.submit-btn,.qty-btn,.payment-option,.remove-btn{transition:all 0.2s cubic-bezier(0.4,0,0.2,1);cursor:pointer}
+.add-btn:active,.category-btn:active,.submit-btn:active,.shop-card:active,.service-item:active,.remove-btn:active{transform:scale(0.97)}
+.add-btn{background:#007aff;color:#fff;border:none;padding:12px 16px;border-radius:14px;font-weight:600;width:100%;font-size:15px}
+.remove-btn{background:rgba(255,59,48,0.15);color:#ff3b30;border:none;padding:8px 12px;border-radius:12px;font-weight:500;font-size:12px;margin-left:10px}
+.remove-btn:hover{background:#ff3b30;color:#fff}
+.category-btn{display:inline-block;backdrop-filter:blur(20px);border:0.5px solid;padding:10px 20px;border-radius:30px;font-size:14px;font-weight:500;margin-right:10px;cursor:pointer}
+.category-btn.active{background:#007aff;color:#fff;border-color:#007aff}
+.submit-btn{background:linear-gradient(135deg,#007aff,#5856d6);border:none;padding:14px;border-radius:14px;color:#fff;font-weight:600;font-size:16px;width:100%}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+.qty-btn{border:none;width:36px;height:36px;border-radius:12px;font-size:18px;font-weight:600;margin:0 4px}
+body.dark .qty-btn{background:rgba(255,255,255,0.1);color:#fff}
+body.light .qty-btn{background:#f2f2f7;color:#1a1a2e}
+header{padding:12px 20px;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-bottom:0.5px solid;position:sticky;top:0;z-index:99}
+body.dark header{background:rgba(20,25,45,0.6);border-bottom-color:rgba(255,255,255,0.08)}
+body.light header{background:rgba(255,255,255,0.5);border-bottom-color:rgba(0,0,0,0.05)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:center;align-items:center}
+.logo-container{display:flex;justify-content:center;align-items:center}
+.logo-pill{display:flex;align-items:center;justify-content:center;padding:0 18px;height:44px;border-radius:22px;background:rgba(255,255,255,0.15);backdrop-filter:blur(40px);border:0.5px solid rgba(255,255,255,0.2);width:0px;transition:width 0.5s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden}
+.logo-letter{font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:0px;opacity:0;display:inline-block;white-space:nowrap}
+body.light .logo-pill{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1)}
+body.light .logo-letter{color:#1a1a2e}
+body.dark .logo-pill{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.15)}
+body.dark .logo-letter{color:#fff}
+.hero{min-height:75vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;z-index:5}
+.hero-content{max-width:800px;margin:0 auto}
+.service-grid{display:grid;gap:16px;max-width:1200px;margin:0 auto;margin-top:30px}
+.service-item{padding:24px 20px;text-align:center;cursor:pointer;transition:all 0.2s}
+.service-title{font-size:17px;font-weight:600;margin-bottom:6px}
+.service-desc{font-size:12px;opacity:0.6}
+
+/* BOSH SAHIFA BANNERI */
+.top-banner{
+  width:100%;
+  max-width:800px;
+  margin:0 auto 30px auto;
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  backdrop-filter:blur(20px);
+  background:rgba(0,0,0,0.2);
+  height:160px;
+}
+.top-banner-slide{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  opacity:0;
+  transition:opacity 0.8s ease-in-out;
+  text-align:center;
+  padding:20px;
+}
+.top-banner-slide.active{opacity:1;z-index:2}
+.top-banner-icon{font-size:48px;margin-bottom:12px}
+.top-banner-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.top-banner-desc{font-size:14px;opacity:0.8}
+.top-banner-dots{display:flex;justify-content:center;gap:12px;margin-top:16px;margin-bottom:30px}
+.top-banner-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s}
+.top-banner-dot.active{width:24px;border-radius:4px;background:#007aff}
+body.light .top-banner-dot{background:rgba(0,0,0,0.3)}
+body.light .top-banner-dot.active{background:#007aff}
+
+/* TUGMA BANNERLARI */
+.service-banner{
+  width:100%;
+  height:115px;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:12px;
+}
+.banner-slide-service{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  opacity:0;
+  transition:opacity 0.5s ease;
+  border-radius:16px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(4px);
+}
+.banner-slide-service.active{
+  opacity:1;
+  z-index:2;
+}
+.banner-icon-service{
+  font-size:34px;
+  margin-bottom:6px;
+}
+.banner-title-service{
+  font-size:15px;
+  font-weight:700;
+  margin-bottom:3px;
+}
+.banner-desc-service{
+  font-size:11px;
+  opacity:0.85;
+}
+body.light .banner-slide-service{background:rgba(0,0,0,0.45)}
+body.dark .banner-slide-service{background:rgba(0,0,0,0.55)}
+
+/* Pastki menyu */
+.bottom-menu{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;align-items:center;padding:10px 20px 14px;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:0.5px solid;z-index:100}
+body.dark .bottom-menu{background:rgba(20,25,45,0.7);border-top-color:rgba(255,255,255,0.08)}
+body.light .bottom-menu{background:rgba(255,255,255,0.5);border-top-color:rgba(0,0,0,0.05)}
+.bottom-menu-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 20px;border-radius:30px;cursor:pointer;transition:all 0.2s}
+.bottom-menu-item:active{transform:scale(0.95)}
+.bottom-menu-item .material-icons-outlined{font-size:24px;margin-bottom:0;background:linear-gradient(135deg,#007aff,#5856d6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bottom-menu-item .label{font-size:11px;font-weight:500;margin-top:2px}
+body.dark .bottom-menu-item .label{color:rgba(255,255,255,0.7)}
+body.light .bottom-menu-item .label{color:rgba(0,0,0,0.6)}
+.bottom-cart-badge{background:#ff3b30;color:#fff;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;margin-left:8px;display:none}
+
+.shop-grid{display:grid;gap:14px;margin-bottom:24px}
+.shop-card{padding:18px 14px;text-align:center;cursor:pointer}
+.shop-name{font-weight:600;font-size:16px;margin-bottom:4px}
+.shop-items{font-size:11px;opacity:0.6}
+.shop-admin{font-size:10px;margin-top:6px;opacity:0.7}
+.categories-scroll{overflow-x:auto;white-space:nowrap;padding:8px 0 16px;margin-bottom:20px;scrollbar-width:none}
+.categories-scroll::-webkit-scrollbar{display:none}
+.menu-grid{display:grid;gap:14px}
+.menu-item{padding:16px;text-align:center}
+.menu-name{font-weight:600;font-size:14px;margin-bottom:4px}
+.menu-price{font-weight:600;font-size:14px;margin-bottom:8px}
+.cart-glass{padding:18px;margin-top:24px}
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:0.5px solid;flex-wrap:wrap;gap:8px}
+.cart-item-info{display:flex;flex-direction:column;gap:4px;flex:1}
+.cart-item-name{font-weight:500;font-size:14px}
+.cart-item-price{font-size:12px;opacity:0.7}
+.cart-item-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cart-total{text-align:right;padding-top:14px;margin-top:8px;border-top:0.5px solid}
+.form-glass{padding:18px;margin-top:18px}
+.clinic-info{display:grid;gap:12px;margin-bottom:20px}
+.clinic-card{padding:14px;text-align:center}
+.checkout-section{max-width:1200px;margin:0 auto;padding:30px 20px;display:none;position:relative;z-index:5}
+.checkout-section.visible{display:block;animation:fadeIn 0.3s ease}
+.checkout-items{padding:18px;margin-bottom:18px}
+.checkout-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:0.5px solid rgba(255,255,255,0.1);flex-wrap:wrap;gap:10px}
+.checkout-item-name{font-size:14px;font-weight:500;flex:2}
+.checkout-item-price{font-size:14px;font-weight:600}
+.checkout-item-remove{background:rgba(255,59,48,0.15);color:#ff3b30;border:none;padding:6px 12px;border-radius:10px;font-size:11px;cursor:pointer}
+.checkout-item-remove:hover{background:#ff3b30;color:#fff}
+.checkout-delivery{font-size:13px;opacity:0.7;margin-top:10px;text-align:right}
+.checkout-total{text-align:right;padding-top:14px;margin-top:10px;border-top:0.5px solid rgba(255,255,255,0.1);font-size:18px;font-weight:700}
+.payment-section{margin-top:16px;padding:16px;border-radius:18px;background:rgba(0,0,0,0.2)}
+body.light .payment-section{background:rgba(0,0,0,0.03)}
+.payment-options{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
+.payment-option{flex:1;padding:12px;border-radius:16px;text-align:center;border:2px solid transparent;cursor:pointer;font-size:14px}
+body.dark .payment-option{background:rgba(255,255,255,0.1)}
+body.light .payment-option{background:#fff}
+.payment-option.selected{border-color:#007aff;background:rgba(0,122,255,0.15)}
+.contact-admin{margin-top:12px;padding:12px;border-radius:16px;text-align:center;background:rgba(0,122,255,0.15);font-size:12px}
+.contact-admin a{color:#007aff;text-decoration:none;font-weight:600}
+.selected-shop-info{background:rgba(0,122,255,0.15);padding:12px;border-radius:16px;margin-bottom:16px;text-align:center;font-size:13px}
+.section-container{max-width:1200px;margin:0 auto;padding:30px 20px;display:none;position:relative;z-index:5}
+.section-container.visible{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.back-btn{background:none;border:none;font-size:14px;font-weight:500;cursor:pointer;margin-top:24px;display:inline-flex;align-items:center;gap:6px}
+body.dark .back-btn{color:#007aff}
+body.light .back-btn{color:#007aff}
+footer{text-align:center;padding:24px 20px;border-top:0.5px solid;margin-top:30px}
+.footer-links{display:flex;gap:12px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.footer-links a{text-decoration:none;font-size:12px;font-weight:500;cursor:pointer;padding:5px 12px;border-radius:30px;background:rgba(0,122,255,0.12);display:inline-block}
+body.dark .footer-links a{color:rgba(255,255,255,0.8)}
+body.light .footer-links a{color:#1a1a2e}
+.footer-links a:hover{background:#007aff;color:#fff}
+footer p{font-size:11px;opacity:0.6}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;justify-content:center;align-items:center;z-index:1000}
+.modal.open{display:flex}
+.modal-content{backdrop-filter:blur(40px);border-radius:28px;padding:24px;text-align:center;max-width:300px;border:0.5px solid;animation:fadeIn 0.2s ease}
+body.dark .modal-content{background:rgba(30,35,55,0.95);border-color:rgba(255,255,255,0.15);color:#fff}
+body.light .modal-content{background:rgba(255,255,255,0.95);border-color:rgba(0,0,0,0.05);color:#1a1a2e}
+.modal-content button{background:#007aff;border:none;padding:10px 24px;border-radius:30px;color:#fff;font-weight:600;cursor:pointer;margin-top:16px}
+@media (max-width:480px){
+.service-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+.service-item{padding:14px 10px}
+.menu-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+.menu-item{padding:12px}
+.shop-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+.shop-card{padding:12px 8px}
+.cart-glass{padding:12px}
+.qty-btn{width:30px;height:30px;font-size:14px}
+.form-glass{padding:12px}
+.form-input,.form-select{padding:10px 12px;font-size:14px}
+.submit-btn{padding:12px;font-size:14px}
+.clinic-info{grid-template-columns:repeat(2,1fr);gap:8px}
+.clinic-card{padding:10px;font-size:11px}
+.category-btn{padding:6px 14px;font-size:11px}
+.bottom-menu{padding:6px 16px 10px}
+.bottom-menu-item{padding:6px 12px}
+.bottom-menu-item .material-icons-outlined{font-size:20px}
+.logo-pill{height:36px!important;padding:0 12px!important}
+.logo-letter{font-size:13px!important}
+.service-banner{height:95px}
+.banner-icon-service{font-size:28px}
+.banner-title-service{font-size:13px}
+.top-banner{height:140px}
+.top-banner-title{font-size:18px}
+.top-banner-icon{font-size:36px}
+}
+@media (min-width:481px) and (max-width:768px){
+.service-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+.menu-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+.shop-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+}
+@media (min-width:769px) and (max-width:1024px){
+.service-grid{grid-template-columns:repeat(2,1fr);gap:20px}
+.menu-grid{grid-template-columns:repeat(3,1fr);gap:20px}
+.shop-grid{grid-template-columns:repeat(3,1fr);gap:20px}
+}
+@media (min-width:1025px){
+.service-grid{grid-template-columns:repeat(4,1fr);gap:24px}
+.menu-grid{grid-template-columns:repeat(4,1fr);gap:20px}
+.shop-grid{grid-template-columns:repeat(5,1fr);gap:20px}
+}
+</style>
+</head>
+<body>
+<div class="animated-bg">
+  <div class="gradient-orb gradient-orb-1"></div>
+  <div class="gradient-orb gradient-orb-2"></div>
+  <div class="gradient-orb gradient-orb-3"></div>
+  <div class="gradient-orb gradient-orb-4"></div>
+  <div class="mesh-gradient"></div>
+  <div id="particlesContainer"></div>
+</div>
+
+<header>
+<div class="header-inner">
+<div class="logo-container">
+<div class="logo-pill" id="logoPill">
+<span class="logo-letter">Z</span>
+<span class="logo-letter">E</span>
+<span class="logo-letter">S</span>
+<span class="logo-letter">T</span>
+<span class="logo-letter">I</span>
+<span class="logo-letter">M</span>
+<span class="logo-letter">O</span>
+</div>
+</div>
+</div>
+</header>
+
+<div id="mainPage" class="hero">
+<div class="hero-content">
+<div class="top-banner">
+  <div class="top-banner-slide active" data-index="0">
+    <div class="top-banner-icon">🎉</div>
+    <div class="top-banner-title">20% CHEGIRMA!</div>
+    <div class="top-banner-desc">Birinchi buyurtmangizga 20% chegirma</div>
+  </div>
+  <div class="top-banner-slide" data-index="1">
+    <div class="top-banner-icon">🚚</div>
+    <div class="top-banner-title">BEPUL YETKAZIB BERISH</div>
+    <div class="top-banner-desc">50 000 so'mdan yuqori buyurtmalarga</div>
+  </div>
+  <div class="top-banner-slide" data-index="2">
+    <div class="top-banner-icon">⭐</div>
+    <div class="top-banner-title">LOYALITY DASTURI</div>
+    <div class="top-banner-desc">Har bir xaridda ball to'plang</div>
+  </div>
+  <div class="top-banner-slide" data-index="3">
+    <div class="top-banner-icon">🎁</div>
+    <div class="top-banner-title">SOVG'ALAR!</div>
+    <div class="top-banner-desc">3-buyurtmangizga sovg'a</div>
+  </div>
+</div>
+<div class="top-banner-dots">
+  <div class="top-banner-dot active" data-dot="0"></div>
+  <div class="top-banner-dot" data-dot="1"></div>
+  <div class="top-banner-dot" data-dot="2"></div>
+  <div class="top-banner-dot" data-dot="3"></div>
+</div>
+
+<div class="service-grid">
+  <div class="service-item" onclick="openService('fastfoodPage')">
+    <div class="service-banner" id="bannerFastfood">
+      <div class="banner-slide-service active" data-index="0">
+        <div class="banner-icon-service">🍔</div>
+        <div class="banner-title-service">BURGERLAR</div>
+        <div class="banner-desc-service">4 xil burger, 25 000 so'mdan</div>
+      </div>
+      <div class="banner-slide-service" data-index="1">
+        <div class="banner-icon-service">🌯</div>
+        <div class="banner-title-service">LAVASHLAR</div>
+        <div class="banner-desc-service">Mazali lavashlar, 22 000 so'mdan</div>
+      </div>
+      <div class="banner-slide-service" data-index="2">
+        <div class="banner-icon-service">🌭</div>
+        <div class="banner-title-service">HOT DOGLAR</div>
+        <div class="banner-desc-service">3 xil hot dog, 15 000 so'mdan</div>
+      </div>
+    </div>
+    <div class="service-title">Zestimo Fastfood</div>
+    <div class="service-desc">Burger, lavash, hotdog, ichimliklar</div>
+  </div>
+
+  <div class="service-item" onclick="openService('dokonPage')">
+    <div class="service-banner" id="bannerDokon">
+      <div class="banner-slide-service active" data-index="0">
+        <div class="banner-icon-service">🛒</div>
+        <div class="banner-title-service">5 TA DO'KON</div>
+        <div class="banner-desc-service">Har birida 40+ mahsulot</div>
+      </div>
+      <div class="banner-slide-service" data-index="1">
+        <div class="banner-icon-service">🏪</div>
+        <div class="banner-title-service">ARZON NARXLAR</div>
+        <div class="banner-desc-service">Kunlik chegirmalar</div>
+      </div>
+    </div>
+    <div class="service-title">Oziq-ovqat do'koni</div>
+    <div class="service-desc">5 ta do'kon, har birida 40+ mahsulot</div>
+  </div>
+
+  <div class="service-item" onclick="openService('somsaPage')">
+    <div class="service-banner" id="bannerSomsa">
+      <div class="banner-slide-service active" data-index="0">
+        <div class="banner-icon-service">🥟</div>
+        <div class="banner-title-service">TANDIR SOMSA</div>
+        <div class="banner-desc-service">Ertalabdan pishirilgan</div>
+      </div>
+      <div class="banner-slide-service" data-index="1">
+        <div class="banner-icon-service">🔥</div>
+        <div class="banner-title-service">YIRIK SOMSA</div>
+        <div class="banner-desc-service">6 000 so'm</div>
+      </div>
+    </div>
+    <div class="service-title">Somsaxona</div>
+    <div class="service-desc">Tandir somsa</div>
+  </div>
+
+  <div class="service-item" onclick="openService('clinicPage')">
+    <div class="service-banner">
+      <div class="banner-slide-service active" style="background:rgba(0,0,0,0.5)">
+        <div class="banner-icon-service">🏥</div>
+        <div class="banner-title-service">BEPUL QABUL</div>
+        <div class="banner-desc-service">08:00 - 18:00</div>
+      </div>
+    </div>
+    <div class="service-title">Qishloq poliklinikasi</div>
+    <div class="service-desc">Bepul qabulga yozilish</div>
+  </div>
+</div>
+</div>
+</div>
+
+<div id="checkoutPage" class="checkout-section"><div class="glass" style="padding:20px"><div style="text-align:center;margin-bottom:16px"><h2 style="font-size:26px;font-weight:700">🛒 Buyurtmani rasmiylashtirish</h2><p style="opacity:0.6;font-size:13px">Tanlangan mahsulotlar</p></div>
+<div id="checkoutItemsList" class="checkout-items"></div>
+<div id="checkoutDeliveryInfo" class="checkout-delivery" style="text-align:right;margin-top:10px"></div>
+<div class="form-glass">
+<input type="text" id="checkoutName" class="form-input" placeholder="Ismingiz" oninput="checkCheckoutForm()">
+<input type="tel" id="checkoutPhone" class="form-input" placeholder="Telefon" oninput="checkCheckoutForm()">
+<select id="checkoutDistrict" class="form-select" onchange="checkCheckoutForm()"><option value="">Hududni tanlang</option><option value="Olchin markazi">Olchin markazi</option><option value="Past mahalla">Past mahalla</option><option value="Maktab oldi">Maktab oldi</option><option value="Dasht mahalla">Dasht mahalla</option><option value="Yangiobod">Yangiobod</option></select>
+<input type="text" id="checkoutAddress" class="form-input" placeholder="Ko'cha / Uy raqami" oninput="checkCheckoutForm()">
+<div class="payment-section"><p style="font-weight:600;font-size:14px">💳 To'lov turi:</p><div class="payment-options"><div class="payment-option" data-pay="cash" onclick="selectCheckoutPayment('cash')">💵 Yetkazilganda naqd</div><div class="payment-option" data-pay="card" onclick="selectCheckoutPayment('card')">💳 Karta orqali</div></div><div id="checkoutContactAdmin" class="contact-admin" style="display:none">🔄 Karta to'lovi uchun bosh admin bilan bog'laning:<br><a href="https://t.me/talgianor" target="_blank">📩 @talgianor</a></div></div>
+<button class="submit-btn" id="checkoutSubmitBtn" onclick="submitCheckoutOrder()" disabled>Buyurtma berish →</button>
+</div>
+<button class="back-btn" onclick="showMain()">← Bosh sahifa</button>
+</div></div>
+
+<div id="fastfoodPage" class="section-container"><div class="glass" style="padding:20px;position:relative"><div style="text-align:center;margin-bottom:16px"><h2 style="font-size:26px;font-weight:700">🍔 Zestimo Fastfood</h2><p style="opacity:0.6;font-size:13px">Mazali va tez yetkazib berish</p></div>
+<div class="categories-scroll">
+<button class="category-btn active" data-cat="burgerlar" onclick="setFastfoodCategory('burgerlar')">🍔 Burgerlar</button>
+<button class="category-btn" data-cat="lavashlar" onclick="setFastfoodCategory('lavashlar')">🌯 Lavashlar</button>
+<button class="category-btn" data-cat="hotdog" onclick="setFastfoodCategory('hotdog')">🌭 Hot Doglar</button>
+<button class="category-btn" data-cat="ichimlik" onclick="setFastfoodCategory('ichimlik')">🥤 Ichimliklar</button>
+<button class="category-btn" data-cat="muzqaymoq" onclick="setFastfoodCategory('muzqaymoq')">🍦 Muzqaymoqlar</button>
+</div>
+<div class="menu-grid" id="fastfoodGrid"></div>
+<div class="cart-glass"><h3 style="font-size:17px;margin-bottom:12px">🛒 Savatcha</h3><div id="fastfoodCart"></div><div class="cart-total" id="fastfoodTotal"></div></div>
+<button class="back-btn" onclick="showMain()">← Bosh sahifa</button>
+</div></div>
+
+<div id="dokonPage" class="section-container"><div class="glass" style="padding:20px;position:relative"><div style="text-align:center;margin-bottom:16px"><h2 style="font-size:26px;font-weight:700">🛒 Oziq-ovqat do'konlari</h2><p style="opacity:0.6;font-size:13px">5 ta do'kon, har birida 40+ mahsulot</p></div>
+<div id="shopSelector" class="shop-grid"></div>
+<div id="shopProductsArea" style="display:none"><div id="selectedShopInfo" class="selected-shop-info"></div><div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="back-btn" onclick="backToShops()" style="margin:0">⬅️ Barcha do'konlar</button></div><div class="menu-grid" id="dokonGrid"></div></div>
+<div class="cart-glass"><h3 style="font-size:17px;margin-bottom:12px">🛒 Savatcha</h3><div id="dokonCart"></div><div class="cart-total" id="dokonTotal"></div></div>
+<button class="back-btn" onclick="showMain()">← Bosh sahifa</button>
+</div></div>
+
+<div id="somsaPage" class="section-container"><div class="glass" style="padding:20px;position:relative"><div style="text-align:center;margin-bottom:16px"><h2 style="font-size:26px;font-weight:700">🥟 Somsaxona</h2><p style="opacity:0.6;font-size:13px">Tandir somsa, ertalabdan pishirilgan</p></div>
+<div class="menu-grid" id="somsaGrid"></div>
+<div class="cart-glass"><h3 style="font-size:17px;margin-bottom:12px">🛒 Savatcha</h3><div id="somsaCart"></div><div class="cart-total" id="somsaTotal"></div></div>
+<button class="back-btn" onclick="showMain()">← Bosh sahifa</button>
+</div></div>
+
+<div id="clinicPage" class="section-container"><div class="glass" style="padding:20px;position:relative"><div style="text-align:center;margin-bottom:16px"><h2 style="font-size:26px;font-weight:700">🏥 Qishloq poliklinikasi</h2><p style="opacity:0.6;font-size:13px">Navbatsiz qabul — vaqtingizni tejang</p></div>
+<div class="clinic-info"><div class="clinic-card">⏱️<br>Tez qabul</div><div class="clinic-card">🕒<br>08:00–18:00</div><div class="clinic-card">💰<br>Bepul</div></div>
+<div class="form-glass"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><input type="text" id="clinicName" class="form-input" placeholder="Ism Familiya" oninput="checkClinicForm()"><input type="tel" id="clinicPhone" class="form-input" placeholder="Telefon" oninput="checkClinicForm()"></div>
+<select id="clinicDoctor" class="form-select" onchange="checkClinicForm()"><option value="">Shifokor turini tanlang</option><option>Terapevt</option><option>Pediatr</option><option>Stomatolog</option><option>Ko'z shifokori</option><option>Quloq-burun-tomoq</option><option>Kardiolog</option><option>Nevropatolog</option></select>
+<input type="date" id="clinicDate" class="form-input" onchange="checkClinicForm()">
+<input type="text" id="clinicNote" class="form-input" placeholder="Shikoyat (ixtiyoriy)">
+<button class="submit-btn" id="clinicSubmitBtn" onclick="submitClinic()" disabled>Qabulga yozilish →</button>
+</div>
+<button class="back-btn" onclick="showMain()">← Bosh sahifa</button>
+</div></div>
+
+<div class="bottom-menu">
+<div class="bottom-menu-item" onclick="showMain()">
+<span class="material-icons-outlined">home</span>
+<span class="label">Bosh sahifa</span>
+</div>
+<div class="bottom-menu-item" onclick="openCheckout()">
+<span class="material-icons-outlined">shopping_cart</span>
+<span class="label">Savatcha</span>
+<span class="bottom-cart-badge" id="bottomCartCount">0</span>
+</div>
+</div>
+
+<footer><div class="footer-links"><a href="https://t.me/talgianor" target="_blank">👑 Bosh admin @talgianor</a><a href="#" onclick="contactShopAdmin(0)">🏪 Do'kon 1</a><a href="#" onclick="contactShopAdmin(1)">🏬 Do'kon 2</a><a href="#" onclick="contactShopAdmin(2)">🏪 Do'kon 3</a><a href="#" onclick="contactShopAdmin(3)">🏬 Do'kon 4</a><a href="#" onclick="contactShopAdmin(4)">🏪 Do'kon 5</a><a href="#" onclick="contactClinicAdmin()">🏥 Poliklinika (7-admin)</a></div><p style="font-size:11px;opacity:0.6">Olchin qishlog'i | Bosh admin: @talgianor</p><p style="font-size:10px;opacity:0.4">© 2026 Zestimo</p></footer>
+<div id="modal" class="modal"><div class="modal-content"><h2>✅ Amal bajarildi!</h2><p id="modalText"></p><button onclick="closeModal()">OK</button></div></div>
+
+<script>
+// BOT SOZLAMALARI - TOKENLAR NETLIFY'DA SAQLANADI
+const MASTER_ADMIN_ID = "6899875078";
+const SHOP_ADMINS = {0:"6899875078",1:"6899875078",2:"6899875078",3:"6899875078",4:"6899875078"};
+const CLINIC_ADMIN_ID = "6899875078";
+const SHOP_ADMIN_USERNAMES = {0:"@shop1_admin",1:"@shop2_admin",2:"@shop3_admin",3:"@shop4_admin",4:"@shop5_admin"};
+
+let paymentMethods = {checkout:"cash"};
+let currentShop = 0;
+let cart = {fastfood:{}, dokon:{}, somsa:{}};
+let currentFastfoodCat = "burgerlar";
+let isInShopProducts = false;
+let topBannerInterval = null;
+let serviceBannerIntervals = {};
+
+// Bosh sahifa banneri (2.8 sekund)
+function startTopBanner(){
+  const slides = document.querySelectorAll('.top-banner-slide');
+  const dots = document.querySelectorAll('.top-banner-dot');
+  if(!slides.length) return;
+  let current = 0;
+  function showSlide(index){
+    slides.forEach(s=>s.classList.remove('active'));
+    dots.forEach(d=>d.classList.remove('active'));
+    slides[index].classList.add('active');
+    dots[index].classList.add('active');
+    current = index;
+  }
+  function nextSlide(){ showSlide((current + 1) % slides.length); }
+  dots.forEach((dot, idx)=>{ dot.addEventListener('click', ()=>{ if(topBannerInterval) clearInterval(topBannerInterval); showSlide(idx); topBannerInterval = setInterval(nextSlide, 2800); }); });
+  if(topBannerInterval) clearInterval(topBannerInterval);
+  topBannerInterval = setInterval(nextSlide, 2800);
+}
+
+// Tugma bannerlari (2.8 sekund)
+function startServiceBanners(){
+  const fastfoodSlides = document.querySelectorAll('#bannerFastfood .banner-slide-service');
+  if(fastfoodSlides.length > 1){
+    let current = 0;
+    serviceBannerIntervals.fastfood = setInterval(() => {
+      fastfoodSlides[current].classList.remove('active');
+      current = (current + 1) % fastfoodSlides.length;
+      fastfoodSlides[current].classList.add('active');
+    }, 2800);
+  }
+  const dokonSlides = document.querySelectorAll('#bannerDokon .banner-slide-service');
+  if(dokonSlides.length > 1){
+    let current = 0;
+    serviceBannerIntervals.dokon = setInterval(() => {
+      dokonSlides[current].classList.remove('active');
+      current = (current + 1) % dokonSlides.length;
+      dokonSlides[current].classList.add('active');
+    }, 2800);
+  }
+  const somsaSlides = document.querySelectorAll('#bannerSomsa .banner-slide-service');
+  if(somsaSlides.length > 1){
+    let current = 0;
+    serviceBannerIntervals.somsa = setInterval(() => {
+      somsaSlides[current].classList.remove('active');
+      current = (current + 1) % somsaSlides.length;
+      somsaSlides[current].classList.add('active');
+    }, 2800);
+  }
+}
+
+function updateBottomCartBadge(){
+  let total=0;
+  let types=["fastfood","dokon","somsa"];
+  for(let t of types){
+    for(let i in cart[t]) total+=cart[t][i].qty;
+  }
+  let badge=document.getElementById("bottomCartCount");
+  if(badge){
+    if(total===0) badge.style.display="none";
+    else { badge.style.display="inline-block"; badge.innerText=total; }
+  }
+}
+
+function startLogoAnimation() {
+    var letters = document.querySelectorAll(".logo-letter");
+    var pill = document.getElementById("logoPill");
+    if(!pill || !letters.length) return;
+    for(var i=0;i<letters.length;i++){ letters[i].style.transition = ""; letters[i].style.opacity = "0"; }
+    pill.style.width = "0px";
+    setTimeout(function(){ pill.style.width = "160px"; }, 50);
+    for(var i=0;i<letters.length;i++){
+        (function(index){
+            setTimeout(function(){
+                letters[index].style.transition = "opacity 0.2s ease";
+                letters[index].style.opacity = "1";
+            }, 400 + index * 150);
+        })(i);
+    }
+}
+
+function initLogoAnimationWithLoop() {
+    startLogoAnimation();
+    setInterval(startLogoAnimation, 8300);
+}
+
+function createParticles(){
+  const container = document.getElementById('particlesContainer');
+  if(!container) return;
+  for(let i=0;i<50;i++){
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    const size = Math.random() * 4 + 1;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.bottom = '-20px';
+    particle.style.animationDelay = Math.random() * 8 + 's';
+    particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+    container.appendChild(particle);
+  }
+}
+
+function getDeliveryPrice() {
+    let pointsCount = 0;
+    if(Object.keys(cart.fastfood).length > 0) pointsCount++;
+    if(Object.keys(cart.somsa).length > 0) pointsCount++;
+    for(let i=0;i<5;i++){ if(Object.keys(cart.dokon).some(key => key.includes(SHOPS[i].name))) pointsCount++; }
+    if(pointsCount === 1) return 7000;
+    if(pointsCount === 2 || pointsCount === 3) return 9000;
+    if(pointsCount === 4 || pointsCount === 5) return 12000;
+    if(pointsCount >= 6) return 15000;
+    return 0;
+}
+
+const productNames = ["Oq non","Javdar noni","Sut 1L","Kefir 1L","Qatiq 500g","Tuxum (10 dona)","Tuxum (30 dona)","Sariyog' 200g","Pishloq 300g","Kartoshka 1kg","Piyoz 1kg","Sabzi 1kg","Pomidor 1kg","Bodring 1kg","Karam 1kg","Guruch 1kg","Makaron 500g","Un 1kg","Shakar 1kg","Tuz 1kg","Yog' 1L","Qaymoq 400g","Mayonez 400g","Ketchup 400g","Asal 500g","Murabbo 400g","Shokolad 100g","Pechenye 400g","Kofe 100g","Choy 100g","Mineral suv 1.5L","Gazlangan suv 1.5L","Mors 1L","Sok 1L","Limonad 1L","Tovuq go'shti 1kg","Mol go'shti 1kg","Baliq 1kg","Kolbasa 500g","Sosiska 400g"];
+const basePrices = [3000,3500,8000,7000,6000,18000,50000,25000,30000,5000,4000,5000,8000,7000,4000,10000,8000,7000,9000,2000,25000,15000,12000,12000,25000,20000,8000,7000,15000,8000,5000,6000,8000,10000,8000,35000,55000,40000,25000,20000];
+const SHOPS = [
+    { id: 0, name: "Do'kon 1 - Assortiment", emoji: "storefront", adminId: SHOP_ADMINS[0], adminName: SHOP_ADMIN_USERNAMES[0], products: [] },
+    { id: 1, name: "Do'kon 2 - Yangi mahsulotlar", emoji: "store", adminId: SHOP_ADMINS[1], adminName: SHOP_ADMIN_USERNAMES[1], products: [] },
+    { id: 2, name: "Do'kon 3 - Arzon narxlar", emoji: "local_grocery_store", adminId: SHOP_ADMINS[2], adminName: SHOP_ADMIN_USERNAMES[2], products: [] },
+    { id: 3, name: "Do'kon 4 - Premium sifat", emoji: "shopping_bag", adminId: SHOP_ADMINS[3], adminName: SHOP_ADMIN_USERNAMES[3], products: [] },
+    { id: 4, name: "Do'kon 5 - Mahalliy maxsulot", emoji: "agriculture", adminId: SHOP_ADMINS[4], adminName: SHOP_ADMIN_USERNAMES[4], products: [] }
+];
+for(let s=0;s<SHOPS.length;s++){
+    for(let i=0;i<productNames.length;i++){
+        let priceVariation = 0.85 + (s * 0.07) + (Math.random() * 0.1);
+        let finalPrice = Math.round(basePrices[i] * priceVariation);
+        finalPrice = Math.max(1000, Math.min(80000, finalPrice));
+        SHOPS[s].products.push({ name: productNames[i], price: finalPrice });
+    }
+}
+const FASTFOOD = {
+    burgerlar: [{name:"Classic Burger",price:25000},{name:"Cheese Burger",price:30000},{name:"Double Burger",price:40000},{name:"Chicken Burger",price:28000}],
+    lavashlar: [{name:"Tovuq Lavash",price:22000},{name:"Mol Lavash",price:28000},{name:"Aralash Lavash",price:30000}],
+    hotdog: [{name:"Classic Hot Dog",price:15000},{name:"Cheese Hot Dog",price:18000},{name:"Jumbo Hot Dog",price:22000}],
+    ichimlik: [{name:"Coca-Cola 0.5L",price:8000},{name:"Pepsi 0.5L",price:8000},{name:"Fanta 0.5L",price:8000},{name:"Suv 0.5L",price:4000}],
+    muzqaymoq: [{name:"Vanil Muzqaymoq",price:10000},{name:"Shokolad Muzqaymoq",price:12000},{name:"Qulupnay Muzqaymoq",price:12000}]
+};
+const SOMSA = [{name:"Mol go'shtli somsa",price:4000},{name:"Tovuq somsa",price:3500},{name:"Kartoshkali somsa",price:2500},{name:"Yirik somsa",price:6000}];
+
+function formatPrice(p){return p.toLocaleString()+" so'm";}
+function saveCartToLocalStorage(){try{localStorage.setItem("zestimo_cart",JSON.stringify(cart));}catch(e){}}
+function loadCartFromLocalStorage(){try{let savedCart=localStorage.getItem("zestimo_cart");if(savedCart){cart=JSON.parse(savedCart);if(document.getElementById("fastfoodCart"))renderCart("fastfood");if(document.getElementById("dokonCart"))renderCart("dokon");if(document.getElementById("somsaCart"))renderCart("somsa");updateBottomCartBadge();}}catch(e){}}
+setInterval(function(){if(cart)saveCartToLocalStorage();},3000);
+window.addEventListener("beforeunload",function(){saveCartToLocalStorage();});
+
+function showMain(){
+    document.getElementById("mainPage").style.display="flex";
+    document.getElementById("checkoutPage").classList.remove("visible");
+    document.querySelectorAll(".section-container").forEach(function(s){s.classList.remove("visible");});
+    isInShopProducts=false;
+}
+function openCheckout(){
+    document.getElementById("mainPage").style.display="none";
+    document.getElementById("checkoutPage").classList.add("visible");
+    document.querySelectorAll(".section-container").forEach(function(s){s.classList.remove("visible");});
+    renderCheckoutItems();
+}
+function openService(id){
+    document.getElementById("mainPage").style.display="none";
+    document.getElementById("checkoutPage").classList.remove("visible");
+    document.querySelectorAll(".section-container").forEach(function(s){s.classList.remove("visible");});
+    document.getElementById(id).classList.add("visible");
+    isInShopProducts=false;
+    if(id==="fastfoodPage")renderFastfood();
+    if(id==="dokonPage")renderDokonShops();
+    if(id==="somsaPage")renderSomsa();
+}
+
+function removeFromCart(type, name){
+    if(cart[type] && cart[type][name]){ delete cart[type][name]; renderCart(type); saveCartToLocalStorage(); updateBottomCartBadge(); if(document.getElementById("checkoutPage").classList.contains("visible")){ renderCheckoutItems(); } }
+}
+
+function renderCheckoutItems(){
+    let container=document.getElementById("checkoutItemsList");
+    let deliveryDiv=document.getElementById("checkoutDeliveryInfo");
+    let allItems=[]; let totalSum=0;
+    let types=["fastfood","dokon","somsa"];
+    for(let t of types){
+        for(let name in cart[t]){
+            let info=cart[t][name];
+            allItems.push({type:t, name:name, qty:info.qty, price:info.price});
+            totalSum+=info.price*info.qty;
+        }
+    }
+    if(allItems.length===0){
+        container.innerHTML='<div style="text-align:center;padding:30px;opacity:0.6">Savat bo\'sh<br><button class="back-btn" onclick="showMain()" style="margin-top:12px">Bosh sahifaga o\'tish</button></div>';
+        if(deliveryDiv)deliveryDiv.innerHTML="";
+        document.getElementById("checkoutSubmitBtn").disabled=true;
+        return;
+    }
+    let deliveryPrice=getDeliveryPrice();
+    let html='<h3 style="margin-bottom:14px;font-size:16px">📦 Siz tanlagan mahsulotlar:</h3>';
+    for(let item of allItems){
+        let sub=item.price*item.qty;
+        html+=`<div class="checkout-item"><div class="checkout-item-name">${item.name} x${item.qty}</div><div class="checkout-item-price">${formatPrice(sub)}</div><button class="checkout-item-remove" onclick="removeFromCart('${item.type}', '${item.name.replace(/'/g, "\\'")}')">❌ O'chirish</button></div>`;
+    }
+    container.innerHTML=html;
+    if(deliveryDiv) deliveryDiv.innerHTML='🚚 Yetkazib berish: '+formatPrice(deliveryPrice);
+    updateCheckoutTotal();
+}
+function updateCheckoutTotal(){
+    let totalSum=0;
+    let types=["fastfood","dokon","somsa"];
+    for(let t of types){ for(let name in cart[t]){ totalSum+=cart[t][name].price*cart[t][name].qty; } }
+    let deliveryPrice=getDeliveryPrice();
+    let totalDiv=document.querySelector("#checkoutPage .checkout-total");
+    if(!totalDiv){
+        let container=document.getElementById("checkoutItemsList");
+        let newDiv=document.createElement("div");
+        newDiv.className="checkout-total";
+        newDiv.id="checkoutTotalDisplay";
+        container.appendChild(newDiv);
+    }
+    let totalDisplay=document.getElementById("checkoutTotalDisplay");
+    if(totalDisplay) totalDisplay.innerHTML='💰 Jami: '+formatPrice(totalSum+deliveryPrice);
+}
+function checkCheckoutForm(){
+    let name=document.getElementById("checkoutName").value.trim();
+    let phone=document.getElementById("checkoutPhone").value.trim();
+    let district=document.getElementById("checkoutDistrict").value;
+    let address=document.getElementById("checkoutAddress").value.trim();
+    document.getElementById("checkoutSubmitBtn").disabled=!(name&&phone&&district&&address);
+}
+function selectCheckoutPayment(method){
+    paymentMethods.checkout=method;
+    let options=document.querySelectorAll("#checkoutPage .payment-option");
+    for(let i=0;i<options.length;i++)options[i].classList.remove("selected");
+    if(method==="cash")options[0].classList.add("selected");
+    else options[1].classList.add("selected");
+    let contactDiv=document.getElementById("checkoutContactAdmin");
+    if(contactDiv){
+        if(method==="card"){ contactDiv.style.display="block"; window.open("https://t.me/talgianor","_blank"); }
+        else contactDiv.style.display="none";
+    }
+}
+
+// NETLIFY ORQALI XAVFSIZ JO' NATISH
+async function sendToTelegram(chatId, message){
+    try{
+        let res = await fetch("/.netlify/functions/send-to-telegram", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: chatId, text: message })
+        });
+        let data = await res.json();
+        return data.ok === true;
+    } catch(e) {
+        return false;
+    }
+}
+
+async function submitCheckoutOrder(){
+    let allItems=[]; let totalSum=0;
+    let types=["fastfood","dokon","somsa"];
+    for(let t of types){ for(let name in cart[t]){ let info=cart[t][name]; allItems.push({name:name,qty:info.qty,price:info.price}); totalSum+=info.price*info.qty; } }
+    if(allItems.length===0){alert("Savat bo'sh!");return;}
+    let name=document.getElementById("checkoutName").value.trim();
+    let phone=document.getElementById("checkoutPhone").value.trim();
+    let district=document.getElementById("checkoutDistrict").value;
+    let address=document.getElementById("checkoutAddress").value.trim();
+    if(!name||!phone||!district||!address){alert("Barcha maydonlarni to'ldiring!");return;}
+    let itemsText="";
+    for(let item of allItems){ itemsText+=item.name+" x"+item.qty+" = "+formatPrice(item.price*item.qty)+"\n"; }
+    let deliveryPrice=getDeliveryPrice();
+    let total=totalSum+deliveryPrice;
+    let payMethod=paymentMethods.checkout;
+    let payText=payMethod==="cash"?"💵 Yetkazilganda naqd":"💳 Karta orqali";
+    let device=getDeviceInfo();
+    let ip=await getUserIP();
+    let time=getTashkentTimeString();
+    let masterMsg=createMasterMessage("🛒 UMUMIY BUYURTMA",name,phone,district,address,itemsText,total,payText,device,ip,time,deliveryPrice);
+    let btn=document.getElementById("checkoutSubmitBtn");
+    btn.disabled=true;
+    btn.textContent="Yuborilmoqda...";
+    let success=await sendToTelegram(MASTER_ADMIN_ID,masterMsg);
+    if(success)document.getElementById("modalText").innerHTML='✅ Buyurtmangiz qabul qilindi!<br><small>Tez orada operator siz bilan bog\'lanadi.<br>'+(payMethod==="card"?"To\'lov bosh admin @talgianor orqali.":"To\'lov yetkazib berishda naqd.")+"</small>";
+    else document.getElementById("modalText").innerHTML='❌ Xatolik!<br><small>@talgianor ga murojaat qiling.</small>';
+    cart={fastfood:{},dokon:{},somsa:{}};
+    renderCart("fastfood");
+    renderCart("dokon");
+    renderCart("somsa");
+    updateBottomCartBadge();
+    saveCartToLocalStorage();
+    showMain();
+    btn.disabled=false;
+    btn.textContent="Buyurtma berish →";
+    document.getElementById("modal").classList.add("open");
+}
+
+function handleBackButton(){if(isInShopProducts){backToShops();}else if(document.querySelector(".section-container.visible")){showMain();}else if(document.getElementById("checkoutPage").classList.contains("visible")){showMain();}else{if(confirm("Ilovadan chiqmoqchimisiz?")){window.history.back();}}}
+document.addEventListener("backbutton",function(e){e.preventDefault();handleBackButton();},false);
+
+function renderFastfood(){
+    let items=FASTFOOD[currentFastfoodCat];
+    let html="";
+    for(let i=0;i<items.length;i++){
+        let item=items[i];
+        let safeName=item.name.replace(/'/g,"\\'");
+        html+='<div class="menu-item"><div class="menu-name">'+item.name+'</div><div class="menu-price">'+formatPrice(item.price)+'</div><button class="add-btn" onclick="addToCart(\'fastfood\', \''+safeName+'\', '+item.price+', this)">+ Qo\'shish</button></div>';
+    }
+    document.getElementById("fastfoodGrid").innerHTML=html;
+    renderCart("fastfood");
+}
+function setFastfoodCategory(cat){
+    currentFastfoodCat=cat;
+    let btns=document.querySelectorAll("#fastfoodPage .category-btn");
+    for(let i=0;i<btns.length;i++){
+        let btn=btns[i];
+        if(btn.getAttribute("data-cat")===cat)btn.classList.add("active");
+        else btn.classList.remove("active");
+    }
+    renderFastfood();
+}
+function renderSomsa(){
+    let html="";
+    for(let i=0;i<SOMSA.length;i++){
+        let item=SOMSA[i];
+        let safeName=item.name.replace(/'/g,"\\'");
+        html+='<div class="menu-item"><div class="menu-name">'+item.name+'</div><div class="menu-price">'+formatPrice(item.price)+'</div><button class="add-btn" onclick="addToCart(\'somsa\', \''+safeName+'\', '+item.price+', this)">+ Qo\'shish</button></div>';
+    }
+    document.getElementById("somsaGrid").innerHTML=html;
+    renderCart("somsa");
+}
+function renderDokonShops(){
+    isInShopProducts=false;
+    let html="";
+    for(let i=0;i<SHOPS.length;i++){
+        html+='<div class="shop-card" onclick="selectShop('+i+')"><div class="shop-name">'+SHOPS[i].name+'</div><div class="shop-items">'+SHOPS[i].products.length+' turdagi mahsulot</div><div class="shop-admin">👤 Admin: '+SHOPS[i].adminName+'</div></div>';
+    }
+    document.getElementById("shopSelector").innerHTML=html;
+    document.getElementById("shopSelector").style.display="grid";
+    document.getElementById("shopProductsArea").style.display="none";
+}
+function selectShop(shopId){
+    currentShop=shopId;
+    isInShopProducts=true;
+    document.getElementById("shopSelector").style.display="none";
+    document.getElementById("shopProductsArea").style.display="block";
+    let shop=SHOPS[shopId];
+    document.getElementById("selectedShopInfo").innerHTML='🏪 <strong>'+shop.name+'</strong><br>📍 Admin: '+shop.adminName+'<br>💳 Ushbu do\'kondan buyurtma berganingizda, xabar to\'g\'ridan-to\'g\'ri do\'kon adminiga yuboriladi.';
+    let html="";
+    for(let i=0;i<shop.products.length;i++){
+        let p=shop.products[i];
+        let fullName=shop.name+" - "+p.name;
+        let safeName=fullName.replace(/'/g,"\\'");
+        html+='<div class="menu-item"><div class="menu-name">'+p.name+'</div><div class="menu-price">'+formatPrice(p.price)+'</div><button class="add-btn" onclick="addToCart(\'dokon\', \''+safeName+'\', '+p.price+', this)">+ Qo\'shish</button></div>';
+    }
+    document.getElementById("dokonGrid").innerHTML=html;
+    renderCart("dokon");
+}
+function backToShops(){isInShopProducts=false;document.getElementById("shopSelector").style.display="grid";document.getElementById("shopProductsArea").style.display="none";}
+function contactShopAdmin(shopId){let shop=SHOPS[shopId];window.open("https://t.me/"+shop.adminName.replace("@",""),"_blank");}
+function contactClinicAdmin(){window.open("https://t.me/poliklinika_admin","_blank");}
+
+function addToCart(type,name,price,btn){
+    if(cart[type][name])cart[type][name].qty++;
+    else cart[type][name]={price:price,qty:1};
+    renderCart(type);
+    saveCartToLocalStorage();
+    btn.textContent="✓";
+    setTimeout(function(){btn.textContent="+ Qo\'shish";},800);
+    updateBottomCartBadge();
+}
+function changeQty(type,name,delta){
+    if(!cart[type][name])return;
+    cart[type][name].qty+=delta;
+    if(cart[type][name].qty<=0)delete cart[type][name];
+    renderCart(type);
+    saveCartToLocalStorage();
+    updateBottomCartBadge();
+}
+function renderCart(type){
+    let container=document.getElementById(type+"Cart");
+    let totalEl=document.getElementById(type+"Total");
+    if(!container)return;
+    let current=cart[type];
+    let keys=Object.keys(current);
+    if(keys.length===0){ container.innerHTML='<div style="opacity:0.6;">Savat bo\'sh</div>'; if(totalEl)totalEl.innerHTML=""; return; }
+    let sum=0;
+    let html="";
+    for(let i=0;i<keys.length;i++){
+        let name=keys[i];
+        let info=current[name];
+        let sub=info.price*info.qty;
+        sum+=sub;
+        let shortName=name.length>35?name.substring(0,32)+"...":name;
+        let safeName=name.replace(/'/g,"\\'");
+        html+=`<div class="cart-item">
+            <div class="cart-item-info">
+                <span class="cart-item-name">${shortName}</span>
+                <span class="cart-item-price">${formatPrice(info.price)} / dona</span>
+            </div>
+            <div class="cart-item-controls">
+                <button class="qty-btn" onclick="changeQty('${type}', '${safeName}', -1)">−</button>
+                <span style="margin:0 6px;font-size:15px;font-weight:600;min-width:30px;text-align:center">${info.qty}</span>
+                <button class="qty-btn" onclick="changeQty('${type}', '${safeName}', 1)">+</button>
+                <span style="margin-left:10px;font-weight:600;font-size:15px;min-width:80px;text-align:right">${formatPrice(sub)}</span>
+                <button class="remove-btn" onclick="removeFromCart('${type}', '${safeName}')">O'chirish</button>
+            </div>
+        </div>`;
+    }
+    container.innerHTML=html;
+    if(totalEl)totalEl.innerHTML='<div style="font-size:16px;font-weight:700;margin-top:8px;">Jami: '+formatPrice(sum)+'</div>';
+}
+
+function checkClinicForm(){let name=document.getElementById("clinicName").value.trim();let phone=document.getElementById("clinicPhone").value.trim();let doctor=document.getElementById("clinicDoctor").value;let date=document.getElementById("clinicDate").value;document.getElementById("clinicSubmitBtn").disabled=!(name&&phone&&doctor&&date);}
+async function submitClinic(){let name=document.getElementById("clinicName").value.trim();let phone=document.getElementById("clinicPhone").value.trim();let doctor=document.getElementById("clinicDoctor").value;let date=document.getElementById("clinicDate").value;let note=document.getElementById("clinicNote").value;if(!name||!phone||!doctor||!date){alert("Barcha asosiy maydonlarni to'ldiring!");return;}let device=getDeviceInfo();let ip=await getUserIP();let time=getTashkentTimeString();let masterMsg="🏥 POLIKLINIKA QABUL SO'ROVI\n━━━━━━━━━━━━━━━━━━━━━\n⏰ Vaqt: "+time+"\n📱 Qurilma: "+device.device+"\n💿 OS: "+device.os+"\n🌐 Brauzer: "+device.browser+"\n🔌 IP manzil: "+ip+"\n━━━━━━━━━━━━━━━━━━━━━\n👤 Bemor: "+name+"\n📞 Telefon: "+phone+"\n👨‍⚕️ Shifokor: "+doctor+"\n📅 Sana: "+date+(note?"\n📝 Shikoyat: "+note:"")+"\n━━━━━━━━━━━━━━━━━━━━━\n✅ Yangi qabul so'rovi!";let clinicMsg=createClinicMessage(name,phone,doctor,date,note,time);let btn=document.getElementById("clinicSubmitBtn");btn.disabled=true;btn.textContent="Yuborilmoqda...";let masterSuccess=await sendToTelegram(MASTER_ADMIN_ID,masterMsg);let clinicSuccess=await sendToTelegram(CLINIC_ADMIN_ID,clinicMsg);if(masterSuccess&&clinicSuccess)document.getElementById("modalText").innerHTML="✅ Qabulga yozildingiz!<br><small>Tez orada poliklinika xodimi siz bilan bog'lanadi.</small>";else document.getElementById("modalText").innerHTML='❌ Xatolik!<br><small>@talgianor ga murojaat qiling.</small>';document.getElementById("clinicName").value="";document.getElementById("clinicPhone").value="";document.getElementById("clinicDoctor").value="";document.getElementById("clinicDate").value="";document.getElementById("clinicNote").value="";checkClinicForm();btn.disabled=false;btn.textContent="Qabulga yozilish →";document.getElementById("modal").classList.add("open");}
+function closeModal(){document.getElementById("modal").classList.remove("open");}
+
+function getDeviceInfo(){let device="📱 Telefon",os="Noma'lum",browser="Noma'lum";let ua=navigator.userAgent;if(!/Mobi|Android|iPhone/i.test(ua))device="💻 Kompyuter";if(/Windows/i.test(ua))os="Windows";else if(/Android/i.test(ua))os="Android";else if(/iPhone|iPad/i.test(ua))os="iOS";if(/Chrome/i.test(ua)&&!/Edg/i.test(ua))browser="Chrome";else if(/Safari/i.test(ua)&&!/Chrome/i.test(ua))browser="Safari";return{device:device,os:os,browser:browser};}
+async function getUserIP(){try{let res=await fetch("https://api.ipify.org?format=json");let data=await res.json();return data.ip;}catch(e){return"Aniqlanmadi";}}
+function getTashkentTimeString(){let now=new Date();let utc=now.getTime()+(now.getTimezoneOffset()*60000);let t=new Date(utc+3600000*5);return t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0')+':'+t.getSeconds().toString().padStart(2,'0');}
+function setThemeByTashkentTime(){
+    let now=new Date(); let utc=now.getTime()+(now.getTimezoneOffset()*60000); let hour=new Date(utc+3600000*5).getHours();
+    let isDay=hour>=6&&hour<18;
+    let body=document.body;
+    let starsContainer=document.getElementById('starsContainer');
+    let sun=document.querySelector('.sun');
+    let superMoon=document.querySelector('.super-moon');
+    let clouds=document.querySelectorAll('.cloud-real');
+    if(isDay){
+        body.classList.remove('dark');body.classList.add('light');
+        if(starsContainer)starsContainer.style.display='none';
+        if(sun)sun.style.display='block';
+        if(superMoon)superMoon.style.display='none';
+        clouds.forEach(c=>c.style.display='block');
+    }else{
+        body.classList.remove('light');body.classList.add('dark');
+        if(starsContainer){starsContainer.style.display='block';createStars();}
+        if(sun)sun.style.display='none';
+        if(superMoon)superMoon.style.display='block';
+        clouds.forEach(c=>c.style.display='none');
+    }
+}
+function createStars(){let container=document.getElementById('starsContainer');if(!container)return;container.innerHTML='';for(let i=0;i<100;i++){let star=document.createElement('div');star.className='star';let size=Math.random()*2+0.5;star.style.width=size+'px';star.style.height=size+'px';star.style.left=Math.random()*100+'%';star.style.top=Math.random()*100+'%';star.style.opacity=Math.random()*0.5+0.2;container.appendChild(star);}}
+function createMasterMessage(orderName,name,phone,district,address,items,total,payText,device,ip,time,deliveryPrice){return"🛒 "+orderName+" BUYURTMA (Yangi buyurtma!)\n━━━━━━━━━━━━━━━━━━━━━\n⏰ Vaqt: "+time+"\n📱 Qurilma: "+device.device+"\n💿 OS: "+device.os+"\n🌐 Brauzer: "+device.browser+"\n🔌 IP manzil: "+ip+"\n━━━━━━━━━━━━━━━━━━━━━\n📍 Hudud: "+district+"\n👤 Mijoz: "+name+"\n📞 Telefon: "+phone+"\n🏠 Manzil: "+address+"\n━━━━━━━━━━━━━━━━━━━━━\n📦 BUYURTMA:\n"+items+"\n━━━━━━━━━━━━━━━━━━━━━\n🚚 Yetkazib berish: "+formatPrice(deliveryPrice)+"\n💰 JAMI: "+formatPrice(total)+"\n💳 To'lov: "+payText+"\n━━━━━━━━━━━━━━━━━━━━━\n✅ Buyurtma qabul qilindi!";}
+function createClinicMessage(name,phone,doctor,date,note,time){return"🏥 POLIKLINIKA QABUL SO'ROVI\n━━━━━━━━━━━━━━━━━━━━━\n⏰ Vaqt: "+time+"\n━━━━━━━━━━━━━━━━━━━━━\n👤 Bemor: "+name+"\n📞 Telefon: "+phone+"\n👨‍⚕️ Shifokor: "+doctor+"\n📅 Sana: "+date+(note?"\n📝 Shikoyat: "+note:"")+"\n━━━━━━━━━━━━━━━━━━━━━\n✅ Yangi qabul so'rovi!";}
+
+setThemeByTashkentTime();
+setInterval(setThemeByTashkentTime, 60000);
+loadCartFromLocalStorage();
+renderFastfood();
+renderSomsa();
+renderDokonShops();
+showMain();
+createParticles();
+startTopBanner();
+startServiceBanners();
+initLogoAnimationWithLoop();
+updateBottomCartBadge();
+</script>
+</body>
+</html>
